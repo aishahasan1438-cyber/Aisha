@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>تدريب المهارات الأساسية – رياضيات سادس ابتدائي</title>
+  <meta name="description" content="موقع تفاعلي للتدريب على المهارات الأساسية في الرياضيات للصف السادس الابتدائي." />
+
+  <!-- ====== CSS (مُدمج) ====== -->
+  <style>
+    :root {
+      --bg: #0f172a; /* slate-900 */
+      --card: #111827; /* gray-900 */
+      --text: #e5e7eb; /* gray-200 */
+      --muted: #94a3b8; /* slate-400 */
+      --primary: #10b981; /* emerald-500 */
+      --primary-700: #047857;
+      --secondary: #60a5fa; /* blue-400 */
+      --danger: #ef4444; /* red-500 */
+      --chip: #1f2937; /* gray-800 */
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Noto Naskh Arabic, Noto Sans Arabic, Arial, sans-serif;
+      background: linear-gradient(120deg, #0b1023, #121a35);
+      color: var(--text);
+    }
+    .app-header, .app-footer { padding: 1rem 1.2rem; background: rgba(0,0,0,0.25); backdrop-filter: blur(6px); }
+    .app-header h1 { margin: 0 0 .5rem; font-size: 1.4rem; }
+    .top-nav { display: flex; gap: .6rem; flex-wrap: wrap; }
+    .linklike { background: var(--chip); color: var(--text); border: 1px solid #334155; padding: .5rem .8rem; border-radius: .6rem; cursor: pointer; }
+    .linklike.danger { color: #fecaca; border-color: var(--danger); }
+    .linklike:hover { filter: brightness(1.1); }
+
+    .container { max-width: 900px; margin: 1rem auto; padding: 0 1rem; }
+    .view { display: none; }
+    .view.active { display: block; }
+
+    .pill-list { display: flex; gap: .4rem; flex-wrap: wrap; list-style: none; padding: 0; }
+    .pill-list li { background: var(--chip); padding: .4rem .7rem; border-radius: 999px; border: 1px solid #374151; }
+
+    .start-form { margin-top: 1rem; background: rgba(17,24,39,.6); padding: 1rem; border: 1px solid #263043; border-radius: .8rem; }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .8rem; }
+    label { display: grid; gap: .25rem; font-size: .95rem; }
+    select, input[type="text"] { padding: .55rem .6rem; border-radius: .6rem; border: 1px solid #334155; background: #0b1222; color: var(--text); }
+    .checkbox { display: flex; align-items: center; gap: .5rem; }
+    .primary { background: var(--primary); color: #04251e; border: none; padding: .6rem 1rem; border-radius: .6rem; font-weight: 700; cursor: pointer; }
+    .primary:hover { background: var(--primary-700); color: #e7fff7; }
+    .secondary { background: var(--secondary); color: #0a1629; border: none; padding: .6rem 1rem; border-radius: .6rem; font-weight: 700; cursor: pointer; }
+    .secondary[disabled] { opacity: .55; cursor: not-allowed; }
+    .badge { background: #0b1222; border: 1px solid #2a3653; padding: .35rem .6rem; border-radius: .5rem; }
+    .muted { color: var(--muted); }
+
+    .practice-head { display: flex; align-items: center; justify-content: space-between; gap: .6rem; }
+    .card { background: rgba(17,24,39,.6); border: 1px solid #263043; border-radius: .8rem; padding: 1rem; margin-top: 1rem; }
+    .q-text { font-size: 1.25rem; margin-bottom: .6rem; }
+    .q-choices { display: grid; gap: .5rem; margin-bottom: .6rem; }
+    .choice { display: block; text-align: start; background: #101827; border: 1px solid #2a3653; padding: .55rem .7rem; border-radius: .6rem; cursor: pointer; }
+    .choice:hover { border-color: #4f46e5; }
+    .choice.selected { outline: 2px solid #4f46e5; }
+
+    .free-input { width: 100%; margin-inline-start: .4rem; max-width: 280px; }
+    .actions { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
+
+    .feedback { margin-top: .6rem; font-weight: 700; }
+    .feedback.ok { color: #86efac; }
+    .feedback.no { color: #fecaca; }
+    .hint { margin-top: .4rem; }
+
+    @media (max-width: 480px) {
+      .app-header h1 { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="app-header">
+    <h1>🚀 تدريب المهارات الأساسية – رياضيات سادس</h1>
+    <nav class="top-nav" aria-label="التنقل">
+      <button id="btn-home" class="linklike" aria-controls="home">الصفحة الرئيسية</button>
+      <button id="btn-practice" class="linklike" aria-controls="practice">ابدأ التدريب</button>
+      <button id="btn-report" class="linklike" aria-controls="report">التقرير</button>
+      <button id="btn-reset" class="linklike danger" title="إعادة تعيين التقدم">تصفير التقدم</button>
+    </nav>
+  </header>
+
+  <main id="main" class="container">
+    <!-- صفحة البداية -->
+    <section id="home" class="view active" aria-labelledby="home-title">
+      <h2 id="home-title">مرحبًا 👋</h2>
+      <p>
+        هذا الموقع يساعدك على مراجعة <strong>المهارات الأساسية في الرياضيات</strong> للصف السادس الابتدائي من خلال أسئلة تفاعلية مع تغذية راجعة فورية.
+      </p>
+      <ol class="pill-list">
+        <li>العمليات الأربع</li>
+        <li>الكسور والأعداد العشرية والنسب المئوية</li>
+        <li>النسبة والتناسب</li>
+        <li>الهندسة وقياس الزوايا والمساحة والحجم</li>
+        <li>البيانات والاحتمال</li>
+        <li>المتغيرات والتعابير والمعادلات البسيطة</li>
+      </ol>
+      <p class="muted">اختر وضع التدريب بالأسفل ثم اضغط «ابدأ الآن».</p>
+
+      <form id="start-form" class="start-form" aria-label="اختيارات البدء">
+        <div class="grid-2">
+          <label>
+            المجال
+            <select id="domain-select" name="domain">
+              <option value="all">كل المهارات</option>
+              <option value="operations">العمليات</option>
+              <option value="fractions">الكسور والعشري</option>
+              <option value="ratio">النسبة والتناسب</option>
+              <option value="geometry">الهندسة والقياس</option>
+              <option value="data">البيانات والاحتمال</option>
+              <option value="algebra">التعابير والمعادلات</option>
+            </select>
+          </label>
+          <label>
+            عدد الأسئلة
+            <select id="count-select" name="count">
+              <option>5</option>
+              <option selected>10</option>
+              <option>15</option>
+              <option>20</option>
+            </select>
+          </label>
+          <label>
+            مستوى الصعوبة
+            <select id="level-select" name="level">
+              <option value="mix" selected>متنوع</option>
+              <option value="1">سهل</option>
+              <option value="2">متوسط</option>
+              <option value="3">متقدم</option>
+            </select>
+          </label>
+          <label class="checkbox">
+            <input type="checkbox" id="timed-mode" /> تفعيل المؤقت (30 ثانية لكل سؤال)
+          </label>
+        </div>
+        <button type="submit" class="primary">ابدأ الآن</button>
+      </form>
+    </section>
+
+    <!-- صفحة التدريب -->
+    <section id="practice" class="view" aria-labelledby="practice-title">
+      <div class="practice-head">
+        <h2 id="practice-title">التدريب</h2>
+        <div class="stats">
+          <span id="progress-badge" class="badge" aria-live="polite">0/0</span>
+          <span id="timer" class="badge" hidden>⏱ 30</span>
+          <span id="score" class="badge">الدرجة: 0</span>
+        </div>
+      </div>
+
+      <div id="q-card" class="card" aria-live="polite">
+        <div id="q-text" class="q-text"></div>
+        <div id="q-choices" class="q-choices"></div>
+        <div class="actions">
+          <input id="free-input" class="free-input" type="text" inputmode="decimal" placeholder="أدخل الإجابة" aria-label="أدخل الإجابة" />
+          <button id="btn-check" class="primary">تحقق</button>
+          <button id="btn-next" class="secondary" disabled>التالي ▶</button>
+        </div>
+        <div id="feedback" class="feedback" aria-live="polite"></div>
+        <details id="hint-box" class="hint"><summary>تلميح</summary><div id="hint-text"></div></details>
+      </div>
+    </section>
+
+    <!-- صفحة التقرير -->
+    <section id="report" class="view" aria-labelledby="report-title">
+      <h2 id="report-title">تقرير الأداء</h2>
+      <div id="report-content" class="card">
+        <p class="muted">ابدأ تدريبًا لعرض تقرير مفصل عن الدرجات والزمن ونِقاط القوة والاحتياج.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <small>© 2026 — موقع تدريبي مجاني للطلاب والمعلمين. يعمل دون إنترنت بعد التحميل الأول.</small>
+  </footer>
+
+  <!-- ====== JavaScript (مُدمج) ====== -->
+  <script>
+    // ===== بنك الأسئلة (مدمج داخل الصفحة) =====
+    const QUESTIONS = [
+      {"id":1,"domain":"operations","level":1,"type":"mcq","text":"ناتج 48 ÷ 6 =","choices":["6","7","8","9"],"answer":"8","hint":"القسمة معكوسة للضرب: 6 × 8 = 48"},
+      {"id":2,"domain":"operations","level":1,"type":"mcq","text":"ناتج 35 + 27 =","choices":["52","60","62","64"],"answer":"62","hint":"اجمع الوحدات ثم العشرات."},
+      {"id":3,"domain":"operations","level":2,"type":"input","text":"احسب: 125 − 87","answer":"38","hint":"استلف من العشرات عند الحاجة."},
+      {"id":4,"domain":"operations","level":2,"type":"mcq","text":"ناتج 14 × 6 =","choices":["64","74","84","96"],"answer":"84","hint":"6 × 10 + 6 × 4"},
+      {"id":5,"domain":"operations","level":3,"type":"input","text":"ناتج 420 ÷ 15","answer":"28","hint":"قسّم كلاهما على 5 أولاً."},
+      {"id":6,"domain":"operations","level":3,"type":"input","text":"احسب 3(12 − 5)","answer":"21","hint":"طبّق أسبقية العمليات (الأقواس ثم الضرب)."},
+
+      {"id":10,"domain":"fractions","level":1,"type":"mcq","text":"أي الكسور يكافئ 1/2؟","choices":["2/3","3/4","4/8","3/6"],"answer":"4/8","hint":"اضرب البسط والمقام في العدد نفسه."},
+      {"id":11,"domain":"fractions","level":1,"type":"input","text":"حوّل 0.25 إلى كسر مبسط","answer":"1/4","hint":"0.25 = 25/100 ثم بسط."},
+      {"id":12,"domain":"fractions","level":2,"type":"input","text":"احسب: 3/5 + 2/5","answer":"1","hint":"المقامات متساوية: اجمع البسوط فقط."},
+      {"id":13,"domain":"fractions","level":2,"type":"mcq","text":"احسب: 7/8 − 1/4","choices":["3/8","5/8","1/2","7/12"],"answer":"5/8","hint":"وحّد المقامات ثم اطرح."},
+      {"id":14,"domain":"fractions","level":3,"type":"input","text":"ناتج 2/3 × 9","answer":"6","hint":"اضرب ثم بسّط: 9 × 2/3 = 18/3"},
+      {"id":15,"domain":"fractions","level":3,"type":"input","text":"حوّل 45% إلى عدد عشري","answer":"0.45","hint":"اقسم على 100."},
+
+      {"id":20,"domain":"ratio","level":1,"type":"mcq","text":"النسبة بين 2 طلاب و 8 طالبات هي","choices":["1:4","1:3","2:8","4:1"],"answer":"1:4","hint":"قسّم الطرفين على 2."},
+      {"id":21,"domain":"ratio","level":2,"type":"input","text":"إذا 3 أقلام تكلف 9 ريالات، فكم ثمن 5 أقلام؟","answer":"15","hint":"اعتمد التناسب الطردي (×5/3)."},
+      {"id":22,"domain":"ratio","level":3,"type":"input","text":"درجة اختبار 40 من 50. ما النسبة المئوية؟","answer":"80","hint":"(40/50)×100"},
+
+      {"id":30,"domain":"geometry","level":1,"type":"mcq","text":"كم درجة قياس الزاوية القائمة؟","choices":["45°","60°","90°","180°"],"answer":"90°","hint":"الزاوية القائمة تشكل حرف L."},
+      {"id":31,"domain":"geometry","level":1,"type":"input","text":"محيط مستطيل طوله 8 سم وعرضه 3 سم","answer":"22","hint":"محيط = 2(الطول+العرض)."},
+      {"id":32,"domain":"geometry","level":2,"type":"input","text":"مساحة مثلث قاعدته 10 سم وارتفاعه 6 سم","answer":"30","hint":"(القاعدة×الارتفاع)/2"},
+      {"id":33,"domain":"geometry","level":2,"type":"mcq","text":"كم ضلعًا للمضلع السداسي؟","choices":["4","5","6","8"],"answer":"6","hint":"سداسي = ستة."},
+      {"id":34,"domain":"geometry","level":3,"type":"input","text":"حجم متوازي مستطيلات 4×3×5 سم³","answer":"60","hint":"الطول×العرض×الارتفاع."},
+
+      {"id":40,"domain":"data","level":1,"type":"mcq","text":"ما الموضة (القيمة الأكثر تكرارًا) للمجموعة: 3, 5, 5, 2, 5, 4","choices":["3","4","5","لا يوجد"],"answer":"5","hint":"ابحث عن العدد الأكثر تكرارًا."},
+      {"id":41,"domain":"data","level":2,"type":"input","text":"المتوسط الحسابي لـ 2,4,6,8","answer":"5","hint":"مجموع القيم ÷ عددها."},
+      {"id":42,"domain":"data","level":3,"type":"mcq","text":"فرصة الحصول على رقم زوجي عند رمي مكعب أرقام مرة واحدة","choices":["1/6","1/3","1/2","2/3"],"answer":"1/2","hint":"الأعداد الزوجية: 2,4,6."},
+
+      {"id":50,"domain":"algebra","level":1,"type":"mcq","text":"قيمة x في 12 = x + 5","choices":["5","6","7","8"],"answer":"7","hint":"انقل 5 للطرف الآخر بالطرح."},
+      {"id":51,"domain":"algebra","level":2,"type":"input","text":"بسّط: 3x + 2x","answer":"5x","hint":"اجمع المعاملات المتشابهة."},
+      {"id":52,"domain":"algebra","level":3,"type":"input","text":"إذا 2y = 18، فإن y =","answer":"9","hint":"اقسم الطرفين على 2."},
+
+      {"id":60,"domain":"operations","level":1,"type":"mcq","text":"ناتج 90 − 27 =","choices":["53","63","73","77"],"answer":"63","hint":"اطرح الوحدات ثم العشرات."},
+      {"id":61,"domain":"operations","level":2,"type":"input","text":"احسب: 18 × 7","answer":"126","hint":"استخدم 20×7 ثم اطرح 2×7."},
+      {"id":62,"domain":"fractions","level":2,"type":"mcq","text":"أيها أكبر؟ 3/4 أم 2/3","choices":["3/4","2/3","متساويان"],"answer":"3/4","hint":"وحّد المقامات إلى 12."},
+      {"id":63,"domain":"fractions","level":3,"type":"input","text":"اكتب 0.6 على صورة كسر مبسط","answer":"3/5","hint":"6/10 ثم بسط."},
+      {"id":64,"domain":"ratio","level":1,"type":"mcq","text":"المعدل لسرعة 120 كم في 3 ساعات =","choices":["30 كم/سا","40 كم/سا","50 كم/سا","60 كم/سا"],"answer":"40 كم/سا","hint":"القسمة على 3."},
+      {"id":65,"domain":"geometry","level":1,"type":"mcq","text":"مجموع زوايا المثلث =","choices":["90°","120°","180°","360°"],"answer":"180°","hint":"ثابت في كل المثلثات."},
+      {"id":66,"domain":"geometry","level":2,"type":"input","text":"نصف قطر دائرة قطرها 14 سم =","answer":"7","hint":"نصف القطر = القطر ÷ 2."},
+      {"id":67,"domain":"data","level":1,"type":"input","text":"المدى للقيم 2,4,7,10","answer":"8","hint":"أكبر قيمة − أصغر قيمة."},
+      {"id":68,"domain":"algebra","level":2,"type":"mcq","text":"قيمة 2x عندما x=5","choices":["5","7","10","12"],"answer":"10","hint":"عوِّض بقيمة x مباشرة."},
+      {"id":69,"domain":"operations","level":1,"type":"input","text":"اكمل: 9 × 9 =","answer":"81","hint":"جدول التسعة."},
+      {"id":70,"domain":"fractions","level":3,"type":"mcq","text":"%25 من 60 =","choices":["10","12","15","20"],"answer":"15","hint":"ربع العدد."},
+      {"id":71,"domain":"ratio","level":2,"type":"input","text":"إذا 5 كعكات تكلف 25 ريالًا، فما ثمن 1 كعكة؟","answer":"5","hint":"قسمة كلية على عدد القطع."},
+      {"id":72,"domain":"algebra","level":3,"type":"input","text":"حل: x/4 = 3","answer":"12","hint":"اضرب الطرفين في 4."},
+      {"id":73,"domain":"data","level":2,"type":"mcq","text":"احتمال ظهور وجهة (صورة) في رمية عملة عادلة","choices":["0","1/4","1/2","1"],"answer":"1/2","hint":"وجه أو كتابة احتمالهما متساوٍ."},
+      {"id":74,"domain":"geometry","level":3,"type":"input","text":"مساحة مستطيل 12×5 سم²","answer":"60","hint":"الطول × العرض."}
+    ];
+
+    // ===== حالة التطبيق =====
+    const state = { all: [], session: [], currentIndex: 0, score: 0, timed: false, timeLeft: 30, timerId: null, report: [] };
+
+    // ===== عناصر الواجهة =====
+    const views = { home: document.getElementById('home'), practice: document.getElementById('practice'), report: document.getElementById('report') };
+    const nav = { home: document.getElementById('btn-home'), practice: document.getElementById('btn-practice'), report: document.getElementById('btn-report'), reset: document.getElementById('btn-reset') };
+    const qText = document.getElementById('q-text');
+    const qChoices = document.getElementById('q-choices');
+    const freeInput = document.getElementById('free-input');
+    const btnCheck = document.getElementById('btn-check');
+    const btnNext = document.getElementById('btn-next');
+    const feedback = document.getElementById('feedback');
+    const hintBox = document.getElementById('hint-box');
+    const hintText = document.getElementById('hint-text');
+    const progressBadge = document.getElementById('progress-badge');
+    const timerBadge = document.getElementById('timer');
+    const scoreBadge = document.getElementById('score');
+    const reportContent = document.getElementById('report-content');
+
+    const labels = {
+      operations: 'العمليات',
+      fractions: 'الكسور والعشري',
+      ratio: 'النسبة والتناسب',
+      geometry: 'الهندسة والقياس',
+      data: 'البيانات والاحتمال',
+      algebra: 'التعابير والمعادلات'
+    };
+
+    // ===== تنقل =====
+    function goto(viewId){
+      document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+      views[viewId].classList.add('active');
+    }
+    nav.home.addEventListener('click', ()=>goto('home'));
+    nav.practice.addEventListener('click', ()=>goto('practice'));
+    nav.report.addEventListener('click', ()=>goto('report'));
+    nav.reset.addEventListener('click', ()=>{
+      if(confirm('سيتم حذف تقدمك المحلي بالكامل. هل أنت متأكد؟')){
+        localStorage.removeItem('math6_report');
+        alert('تم تصفير التقدم.');
+        location.reload();
+      }
+    });
+
+    // ===== تحميل الأسئلة (من المصفوفة المدمجة) =====
+    function loadQuestions(){
+      state.all = QUESTIONS.slice(); // نسخة
+    }
+
+    // ===== اختيار عينة =====
+    function sampleQuestions({domain='all', level='mix', count=10}){
+      let filtered = state.all.filter(q => (domain==='all' || q.domain===domain) && (level==='mix' || q.level===+level));
+      if(filtered.length < count){
+        const more = state.all.filter(q => (domain==='all' || q.domain===domain));
+        filtered = filtered.concat(more);
+      }
+      for(let i=filtered.length-1;i>0;i--){
+        const j = Math.floor(Math.random()* (i+1));
+        [filtered[i], filtered[j]] = [filtered[j], filtered[i]];
+      }
+      return filtered.slice(0, count);
+    }
+
+    // ===== عرض السؤال =====
+    function renderQuestion(){
+      const q = state.session[state.currentIndex];
+      if(!q){ return; }
+
+      progressBadge.textContent = `${state.currentIndex+1}/${state.session.length}`;
+      scoreBadge.textContent = `الدرجة: ${state.score}`;
+
+      qText.textContent = q.text;
+      feedback.textContent = '';
+      feedback.className = 'feedback';
+      hintText.textContent = q.hint || '';
+      hintBox.open = false;
+
+      qChoices.innerHTML = '';
+      freeInput.value = '';
+      freeInput.style.display = 'none';
+
+      if(q.type === 'mcq'){
+        q.choices.forEach((c)=>{
+          const b = document.createElement('button');
+          b.className = 'choice';
+          b.textContent = c;
+          b.addEventListener('click', ()=>{
+            document.querySelectorAll('.choice').forEach(x=>x.classList.remove('selected'));
+            b.classList.add('selected');
+            b.dataset.selected = 'true';
+          });
+          qChoices.appendChild(b);
+        });
+      } else if(q.type === 'input'){
+        freeInput.style.display = 'inline-block';
+        freeInput.focus();
+      }
+
+      btnNext.disabled = true;
+      if(state.timed){ startTimer(); } else { stopTimer(); }
+    }
+
+    // ===== أدوات =====
+    function norm(x){ return String(x).trim().replace(/\s+/g,''); }
+
+    function checkAnswer(){
+      const q = state.session[state.currentIndex];
+      let userAns = null;
+
+      if(q.type==='mcq'){
+        const sel = document.querySelector('.choice.selected');
+        if(!sel){ alert('اختر إجابة.'); return; }
+        userAns = sel.textContent;
+      } else {
+        userAns = freeInput.value;
+        if(userAns.trim()===''){ alert('أدخل إجابة.'); return; }
+      }
+
+      let correct = false;
+      if(q.type==='mcq'){
+        correct = norm(userAns) === norm(q.answer);
+      } else {
+        const ua = Number(userAns.replace(',', '.'));
+        const an = Number(String(q.answer).replace(',', '.'));
+        if(!Number.isNaN(ua) && !Number.isNaN(an)){
+          correct = Math.abs(ua - an) < 1e-6;
+        } else {
+          correct = norm(userAns) === norm(q.answer);
+        }
+      }
+
+      if(correct){
+        state.score += 1;
+        feedback.textContent = 'أحسنت! إجابة صحيحة ✅';
+        feedback.classList.add('ok');
+      } else {
+        feedback.innerHTML = `إجابة غير صحيحة ❌ — الصحيح: <strong>${q.answer}</strong>`;
+        feedback.classList.add('no');
+      }
+
+      const entry = {
+        text: q.text,
+        domain: q.domain,
+        level: q.level,
+        user: userAns,
+        answer: q.answer,
+        correct,
+        time: state.timed ? (30 - state.timeLeft) : null
+      };
+      state.report.push(entry);
+
+      stopTimer();
+      btnNext.disabled = false;
+    }
+
+    function nextQuestion(){
+      state.currentIndex += 1;
+      if(state.currentIndex >= state.session.length){
+        endSession();
+      } else {
+        renderQuestion();
+      }
+    }
+
+    function startTimer(){
+      state.timeLeft = 30;
+      timerBadge.hidden = false;
+      timerBadge.textContent = `⏱ ${state.timeLeft}`;
+      stopTimer(); // أوقف أي مؤقت قديم
+      state.timerId = setInterval(()=>{
+        state.timeLeft -= 1;
+        timerBadge.textContent = `⏱ ${state.timeLeft}`;
+        if(state.timeLeft <= 0){
+          stopTimer();
+          feedback.textContent = 'انتهى الوقت ⏱';
+          btnNext.disabled = false;
+        }
+      }, 1000);
+    }
+
+    function stopTimer(){
+      if(state.timerId){ clearInterval(state.timerId); state.timerId=null; }
+      if(!state.timed){ timerBadge.hidden = true; }
+    }
+
+    function endSession(){
+      const prev = JSON.parse(localStorage.getItem('math6_report')||'[]');
+      prev.push({
+        date: new Date().toISOString(),
+        total: state.session.length,
+        score: state.score,
+        percent: Math.round(100*state.score/state.session.length),
+        details: state.report
+      });
+      localStorage.setItem('math6_report', JSON.stringify(prev));
+
+      showReport(prev[prev.length-1]);
+      goto('report');
+    }
+
+    function showReport(session){
+      const byDomain = {};
+      session.details.forEach(d=>{
+        byDomain[d.domain] = byDomain[d.domain] || {correct:0,total:0};
+        byDomain[d.domain].total += 1;
+        if(d.correct) byDomain[d.domain].correct += 1;
+      });
+      const items = Object.entries(byDomain).map(([k,v])=>{
+        const p = Math.round(100*v.correct/v.total);
+        return `<li><strong>${labels[k]||k}</strong>: ${v.correct}/${v.total} (${p}%)</li>`;
+      }).join('');
+
+      const rows = session.details.map((d,i)=>{
+        const emoji = d.correct ? '✅' : '❌';
+        const t = d.time!=null? `${d.time}s` : '-';
+        return `<tr>
+          <td>${i+1}</td>
+          <td>${labels[d.domain]||d.domain}</td>
+          <td>${d.text}</td>
+          <td>${d.user}</td>
+          <td>${d.answer}</td>
+          <td style="text-align:center">${emoji}</td>
+          <td style="text-align:center">${t}</td>
+        </tr>`;
+      }).join('');
+
+      reportContent.innerHTML = `
+        <h3>نتيجة الجلسة: ${session.score}/${session.total} (${session.percent}%)</h3>
+        <p class="muted">تاريخ: ${new Date(session.date).toLocaleString('ar')}</p>
+        <h4>حسب المجالات</h4>
+        <ul>${items}</ul>
+        <details><summary>تفاصيل كل سؤال</summary>
+          <div style="overflow:auto">
+            <table style="width:100%; border-collapse:collapse">
+              <thead>
+                <tr>
+                  <th>#</th><th>المجال</th><th>السؤال</th><th>إجابتك</th><th>الصحيح</th><th>صحة</th><th>الزمن</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        </details>
+      `;
+    }
+
+    // ===== بدء الجلسة =====
+    const startForm = document.getElementById('start-form');
+    startForm.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const domain = document.getElementById('domain-select').value;
+      const count = +document.getElementById('count-select').value;
+      const level = document.getElementById('level-select').value;
+      const timed = document.getElementById('timed-mode').checked;
+
+      state.session = sampleQuestions({domain, level, count});
+      state.currentIndex = 0;
+      state.score = 0;
+      state.report = [];
+      state.timed = timed;
+
+      goto('practice');
+      renderQuestion();
+    });
+
+    // أزرار التحقق/التالي
+    btnCheck.addEventListener('click', checkAnswer);
+    btnNext.addEventListener('click', nextQuestion);
+
+    // تحميل الأسئلة والبدء
+    loadQuestions();
+  </script>
+</body>
+</html>
